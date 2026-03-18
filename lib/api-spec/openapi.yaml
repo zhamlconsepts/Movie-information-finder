@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: cinematch
+    description: Film scene recognition operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /cinematch/identify:
+    post:
+      operationId: identifyFilmScene
+      tags: [cinematch]
+      summary: Identify film from scene image
+      description: Accepts a base64-encoded image and returns information about the film
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentifySceneRequest"
+      responses:
+        "200":
+          description: Film identified successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FilmInfo"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Film not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +72,51 @@ components:
           type: string
       required:
         - status
-
+    IdentifySceneRequest:
+      type: object
+      properties:
+        imageBase64:
+          type: string
+          description: Base64-encoded image data (without data URI prefix)
+        mimeType:
+          type: string
+          description: MIME type of the image (e.g. image/jpeg, image/png)
+      required:
+        - imageBase64
+        - mimeType
+    FilmInfo:
+      type: object
+      properties:
+        found:
+          type: boolean
+          description: Whether a film was identified
+        title:
+          type: ["string", "null"]
+          description: Film title
+        year:
+          type: ["integer", "null"]
+          description: Year of release
+        director:
+          type: ["string", "null"]
+          description: Director name(s)
+        genre:
+          type: ["string", "null"]
+          description: Film genre
+        description:
+          type: ["string", "null"]
+          description: Brief description of the film
+        confidence:
+          type: ["string", "null"]
+          description: Confidence level of the identification
+        sceneDescription:
+          type: ["string", "null"]
+          description: Description of the identified scene
+      required:
+        - found
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

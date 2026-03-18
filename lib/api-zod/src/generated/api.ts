@@ -14,3 +14,33 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Accepts a base64-encoded image and returns information about the film
+ * @summary Identify film from scene image
+ */
+export const IdentifyFilmSceneBody = zod.object({
+  imageBase64: zod
+    .string()
+    .describe("Base64-encoded image data (without data URI prefix)"),
+  mimeType: zod
+    .string()
+    .describe("MIME type of the image (e.g. image\/jpeg, image\/png)"),
+});
+
+export const IdentifyFilmSceneResponse = zod.object({
+  found: zod.boolean().describe("Whether a film was identified"),
+  title: zod.string().nullish().describe("Film title"),
+  year: zod.number().nullish().describe("Year of release"),
+  director: zod.string().nullish().describe("Director name(s)"),
+  genre: zod.string().nullish().describe("Film genre"),
+  description: zod.string().nullish().describe("Brief description of the film"),
+  confidence: zod
+    .string()
+    .nullish()
+    .describe("Confidence level of the identification"),
+  sceneDescription: zod
+    .string()
+    .nullish()
+    .describe("Description of the identified scene"),
+});

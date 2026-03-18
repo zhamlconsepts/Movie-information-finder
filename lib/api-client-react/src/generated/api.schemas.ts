@@ -8,3 +8,54 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface IdentifySceneRequest {
+  /** Base64-encoded image data (without data URI prefix) */
+  imageBase64: string;
+  /** MIME type of the image (e.g. image/jpeg, image/png) */
+  mimeType: string;
+}
+
+export interface FilmInfo {
+  /** Whether a film was identified */
+  found: boolean;
+  /**
+   * Film title
+   * @nullable
+   */
+  title?: string | null;
+  /**
+   * Year of release
+   * @nullable
+   */
+  year?: number | null;
+  /**
+   * Director name(s)
+   * @nullable
+   */
+  director?: string | null;
+  /**
+   * Film genre
+   * @nullable
+   */
+  genre?: string | null;
+  /**
+   * Brief description of the film
+   * @nullable
+   */
+  description?: string | null;
+  /**
+   * Confidence level of the identification
+   * @nullable
+   */
+  confidence?: string | null;
+  /**
+   * Description of the identified scene
+   * @nullable
+   */
+  sceneDescription?: string | null;
+}
+
+export interface ErrorResponse {
+  error: string;
+}

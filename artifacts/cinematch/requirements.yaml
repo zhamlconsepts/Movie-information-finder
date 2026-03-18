@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For cinematic page transitions, background image crossfading, and smooth UI reveals"
+  "react-dropzone": "For handling drag-and-drop file uploads gracefully"
+  "clsx": "For merging tailwind classes conditionally"
+  "tailwind-merge": "For merging tailwind classes without conflicts"
+
+images:
+  - path: "artifacts/cinematch/public/images/scene-1.png"
+    description: "Cinematic establishing shot of a futuristic neon city at night, deep navy blue and soft cyan lighting, moody atmospheric haze, 35mm film style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/cinematch/public/images/scene-2.png"
+    description: "Cinematic close-up of a lone figure standing in a misty dark forest illuminated by a single cold blue spotlight, deep navy tones, anamorphic lens flare"
+    aspect_ratio: "16:9"
+  - path: "artifacts/cinematch/public/images/scene-3.png"
+    description: "Abstract cinematic lighting setup, dark studio environment with deep blue and soft silver gel lights creating dramatic shadows, moody elegant aesthetic"
+    aspect_ratio: "16:9"
+
+notes:
+  - "The app relies on a single endpoint: POST /api/cinematch/identify."
+  - "Since it's a single-page utility, Wouter routing is minimal (just the root path)."
+  - "All text and styling leans heavily into a dark, elegant, cinematic aesthetic."
