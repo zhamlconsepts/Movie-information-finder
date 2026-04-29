@@ -14,22 +14,31 @@ router.post("/cinematch/identify", async (req, res) => {
 
     const { imageBase64, mimeType } = parsed.data;
 
-    const prompt = `You are a film expert with encyclopedic knowledge of cinema worldwide. 
-Analyze this image carefully and determine if it is from a movie, TV show, or film.
+    const prompt = `You are an expert cinephile with encyclopedic knowledge of films and TV series worldwide — Hollywood, European, Asian, Bollywood, Russian, Turkish, Uzbek, Korean, Japanese, animated films, classic cinema, and modern streaming series (Netflix, HBO, Disney+, Amazon).
 
-If you can identify the film, respond with a JSON object in this exact format:
+Carefully examine this image and determine whether it is a frame from a movie or TV show. Use ALL visual cues:
+- Actors' faces and recognizable appearances
+- Costumes, sets, props, locations
+- Color grading, lighting style, cinematography
+- Compositional style, aspect ratio, era cues
+- Visual effects or distinctive production design
+- Iconic shots or scenes you recognize
+
+Respond ONLY with a single valid JSON object — no prose, no markdown, no code fences. Use this exact schema:
+
+If you confidently or reasonably identify the film/show:
 {
   "found": true,
-  "title": "exact film title",
-  "year": release year as a number,
-  "director": "director name(s)",
-  "genre": "genre",
-  "description": "2-3 sentence description of the film",
-  "confidence": "high" or "medium" or "low",
-  "sceneDescription": "brief description of what is happening in this specific scene"
+  "title": "exact official title (use original English title or most well-known title)",
+  "year": release year as integer (for series, the year of the season/episode if known, otherwise series start year),
+  "director": "director name(s) — for TV series use 'creator' name(s)",
+  "genre": "primary genre (e.g. Drama, Sci-Fi, Thriller, Action, Komediya, Triller)",
+  "description": "2–3 sentence description of the film/series IN UZBEK LATIN SCRIPT (oʻzbek tilida, lotin yozuvida). Be informative and natural.",
+  "confidence": "high" | "medium" | "low",
+  "sceneDescription": "1–2 sentences describing what is happening in THIS specific scene, IN UZBEK LATIN SCRIPT"
 }
 
-If you cannot identify a specific film (not a movie scene, or too unclear), respond with:
+If you cannot reasonably identify it (not a movie/show frame, too generic, too unclear):
 {
   "found": false,
   "title": null,
@@ -41,15 +50,22 @@ If you cannot identify a specific film (not a movie scene, or too unclear), resp
   "sceneDescription": null
 }
 
-IMPORTANT: 
-- Look for visual cues: costumes, sets, lighting style, actors, distinctive cinematography
-- Respond ONLY with the JSON object, no other text
-- Be honest about confidence level`;
+Rules:
+- Output JSON only, nothing else.
+- Be honest about confidence: 'high' if you're very sure, 'medium' for educated guess, 'low' for plausible but uncertain.
+- All Uzbek text MUST be in latin script (lotin yozuvi), not cyrillic.
+- Use proper Uzbek words like "rejissyor", "yili", "janri", "kino", "sahna", "qahramon".`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-5.2",
-      max_completion_tokens: 1024,
+      max_completion_tokens: 1500,
+      response_format: { type: "json_object" },
       messages: [
+        {
+          role: "system",
+          content:
+            "You are an Uzbek-speaking film expert assistant that returns concise, accurate JSON responses about identified films. All free-text fields (description, sceneDescription) must be written in Uzbek using latin script.",
+        },
         {
           role: "user",
           content: [

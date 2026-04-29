@@ -4,7 +4,7 @@ import { BackgroundSlider } from "./BackgroundSlider";
 
 export function Hero() {
   return (
-    <section id="home" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative h-[85vh] min-h-[640px] max-h-[820px] flex items-center justify-center overflow-hidden">
       <BackgroundSlider />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 pb-12">
