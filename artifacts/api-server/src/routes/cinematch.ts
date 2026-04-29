@@ -14,31 +14,35 @@ router.post("/cinematch/identify", async (req, res) => {
 
     const { imageBase64, mimeType } = parsed.data;
 
-    const prompt = `You are an expert cinephile with encyclopedic knowledge of films and TV series worldwide — Hollywood, European, Asian, Bollywood, Russian, Turkish, Uzbek, Korean, Japanese, animated films, classic cinema, and modern streaming series (Netflix, HBO, Disney+, Amazon).
+    const prompt = `You are a world-class cinephile with encyclopedic knowledge of films and TV series from EVERY region — Hollywood, European, Asian, Bollywood, Russian, Turkish, Uzbek, Korean, Japanese, anime, classic cinema, and every major streaming series (Netflix, HBO, Disney+, Amazon, Apple TV, etc).
 
-Carefully examine this image and determine whether it is a frame from a movie or TV show. Use ALL visual cues:
-- Actors' faces and recognizable appearances
-- Costumes, sets, props, locations
-- Color grading, lighting style, cinematography
-- Compositional style, aspect ratio, era cues
-- Visual effects or distinctive production design
-- Iconic shots or scenes you recognize
+Examine the image carefully and identify the film or TV series it is from. Use EVERY available visual cue:
+- Actors' faces, even partially visible or in costume/makeup
+- Costumes, props, sets, vehicles, weapons, locations
+- Color grading, lighting style, cinematography signature
+- Composition, framing, aspect ratio, era cues
+- Visual effects, creature design, distinctive production design
+- Iconic shots, memorable scenes, recognizable moments
+- On-screen text, logos, signage, language
+- Genre conventions and visual storytelling cues
+
+BE GENEROUS in identification: if you have a reasonable guess (even 40-60% certain), return it as "medium" or "low" confidence rather than giving up. Users prefer a plausible answer they can verify over a flat "unknown".
 
 Respond ONLY with a single valid JSON object — no prose, no markdown, no code fences. Use this exact schema:
 
-If you confidently or reasonably identify the film/show:
+If you can identify the film/show with ANY reasonable level of confidence:
 {
   "found": true,
-  "title": "exact official title (use original English title or most well-known title)",
+  "title": "exact official title (use original English title or most well-known international title)",
   "year": release year as integer (for series, the year of the season/episode if known, otherwise series start year),
-  "director": "director name(s) — for TV series use 'creator' name(s)",
-  "genre": "primary genre (e.g. Drama, Sci-Fi, Thriller, Action, Komediya, Triller)",
-  "description": "2–3 sentence description of the film/series IN UZBEK LATIN SCRIPT (oʻzbek tilida, lotin yozuvida). Be informative and natural.",
+  "director": "director name(s) — for TV series use 'creator' or 'showrunner' name(s)",
+  "genre": "primary genre (e.g. Drama, Sci-Fi, Thriller, Action, Komediya, Triller, Animatsiya)",
+  "description": "2-3 sentence description of the film/series IN UZBEK LATIN SCRIPT (oʻzbek tilida, lotin yozuvida). Informative and natural.",
   "confidence": "high" | "medium" | "low",
-  "sceneDescription": "1–2 sentences describing what is happening in THIS specific scene, IN UZBEK LATIN SCRIPT"
+  "sceneDescription": "1-2 sentences describing what is happening in THIS specific scene, IN UZBEK LATIN SCRIPT"
 }
 
-If you cannot reasonably identify it (not a movie/show frame, too generic, too unclear):
+ONLY return found:false if the image is clearly NOT a movie/TV scene — for example: a screenshot of a website or app, a meme template, a photo of food/object, a generic stock photo, a personal photo, a document, or pure abstract art. In those cases, return:
 {
   "found": false,
   "title": null,
@@ -47,17 +51,17 @@ If you cannot reasonably identify it (not a movie/show frame, too generic, too u
   "genre": null,
   "description": null,
   "confidence": null,
-  "sceneDescription": null
+  "sceneDescription": "1 sentence in UZBEK LATIN SCRIPT describing what the image actually shows (e.g. 'Bu rasm veb-sayt skrinshotiga oʻxshaydi, kino kadri emas.')"
 }
 
 Rules:
 - Output JSON only, nothing else.
-- Be honest about confidence: 'high' if you're very sure, 'medium' for educated guess, 'low' for plausible but uncertain.
-- All Uzbek text MUST be in latin script (lotin yozuvi), not cyrillic.
-- Use proper Uzbek words like "rejissyor", "yili", "janri", "kino", "sahna", "qahramon".`;
+- Confidence: 'high' = very sure, 'medium' = educated guess, 'low' = plausible match worth offering.
+- All Uzbek text MUST be in latin script (lotin yozuvi), NEVER cyrillic.
+- Use proper Uzbek words: "rejissyor", "yili", "janri", "kino", "sahna", "qahramon", "serial".`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: "gpt-5.4",
       max_completion_tokens: 1500,
       response_format: { type: "json_object" },
       messages: [
