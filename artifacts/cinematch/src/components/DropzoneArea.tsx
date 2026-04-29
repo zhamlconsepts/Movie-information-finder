@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
-import { Film, UploadCloud, Image as ImageIcon, Loader2, Sparkles } from "lucide-react";
+import { Film, UploadCloud, Image as ImageIcon, Loader2, Sparkles, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DropzoneAreaProps {
@@ -23,8 +23,12 @@ export function DropzoneArea({ onFileSelect, isProcessing }: DropzoneAreaProps) 
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
-    accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp"] },
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+      "video/*": [".mp4", ".webm", ".mov", ".mkv", ".avi"],
+    },
     maxFiles: 1,
+    maxSize: 50 * 1024 * 1024, // 50 MB
     disabled: isProcessing,
   });
 
@@ -46,7 +50,6 @@ export function DropzoneArea({ onFileSelect, isProcessing }: DropzoneAreaProps) 
       >
         <input {...getInputProps()} />
 
-        {/* Hover glow */}
         <div
           className={cn(
             "absolute -inset-1/2 opacity-0 blur-3xl transition-opacity duration-700 pointer-events-none",
@@ -63,18 +66,18 @@ export function DropzoneArea({ onFileSelect, isProcessing }: DropzoneAreaProps) 
               {isProcessing
                 ? "Sahna tahlil qilinmoqda..."
                 : isDragActive
-                ? "Rasmni shu yerga tashlang"
-                : "Filmdan kadr yuklang"}
+                ? "Faylni shu yerga tashlang"
+                : "Rasm yoki video yuklang"}
             </h3>
             <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-sm md:text-base">
               {isProcessing
-                ? "Sun'iy intellekt rasmning vizual fingerprint'ini skanerlamoqda..."
-                : "Skrinshotni shu yerga sudrang yoki bosib yuklang. AI kinoni daqiqada aniqlaydi."}
+                ? "Sun'iy intellekt vizual fingerprint'ni skanerlamoqda..."
+                : "Rasm yoki video faylni shu yerga sudrang yoki bosib yuklang. Videodan avtomatik kadr olinadi."}
             </p>
           </div>
 
           {!isProcessing && (
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-2 text-xs sm:text-sm font-medium text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2 text-xs sm:text-sm font-medium text-muted-foreground">
               <span className="flex items-center gap-1.5 px-2.5 h-7 rounded-full glass-panel-soft">
                 <ImageIcon className="w-3.5 h-3.5" /> JPG
               </span>
@@ -83,6 +86,9 @@ export function DropzoneArea({ onFileSelect, isProcessing }: DropzoneAreaProps) 
               </span>
               <span className="flex items-center gap-1.5 px-2.5 h-7 rounded-full glass-panel-soft">
                 <ImageIcon className="w-3.5 h-3.5" /> WEBP
+              </span>
+              <span className="flex items-center gap-1.5 px-2.5 h-7 rounded-full glass-panel-soft text-primary">
+                <Video className="w-3.5 h-3.5" /> MP4 / WEBM / MOV
               </span>
               <span className="flex items-center gap-1.5 px-2.5 h-7 rounded-full glass-panel-soft text-primary">
                 <Sparkles className="w-3.5 h-3.5" /> AI bilan ishonchli

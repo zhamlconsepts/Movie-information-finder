@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIdentifyFilmScene } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { fileToBase64 } from "@/lib/utils";
+import { fileToBase64, extractVideoFrame } from "@/lib/utils";
 
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -11,11 +11,13 @@ import { DropzoneArea } from "@/components/DropzoneArea";
 import { FilmResults } from "@/components/FilmResults";
 import { HowItWorks, SectionTitle } from "@/components/HowItWorks";
 import { PopularFilms } from "@/components/PopularFilms";
+import { RecommendedFilms } from "@/components/RecommendedFilms";
 import { Genres } from "@/components/Genres";
 import { StatsBar } from "@/components/StatsBar";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isPreparing, setIsPreparing] = useState(false);
   const { toast } = useToast();
 
   const { mutate, data: filmData, isPending, reset } = useIdentifyFilmScene({
@@ -25,7 +27,7 @@ export default function Home() {
           title: "Tahlil xatosi",
           description:
             error.error?.error ||
-            "Rasmni qayta ishlab boʻlmadi. Iltimos, boshqa rasm sinab koʻring.",
+            "Faylni qayta ishlab boʻlmadi. Iltimos, boshqa fayl sinab koʻring.",
           variant: "destructive",
         });
         setSelectedImage(null);
@@ -35,25 +37,52 @@ export default function Home() {
 
   const handleFileSelect = async (file: File) => {
     try {
-      const objectUrl = URL.createObjectURL(file);
-      setSelectedImage(objectUrl);
-      const base64 = await fileToBase64(file);
-      mutate({ data: { imageBase64: base64, mimeType: file.type } });
-    } catch {
+      setIsPreparing(true);
+
+      let base64: string;
+      let mimeType: string;
+      let previewUrl: string;
+
+      if (file.type.startsWith("video/")) {
+        toast({
+          title: "Videodan kadr olinmoqda...",
+          description: "Iltimos, biroz kuting.",
+        });
+        const frame = await extractVideoFrame(file);
+        previewUrl = frame.dataUrl;
+        base64 = await fileToBase64(frame.blob);
+        mimeType = "image/jpeg";
+      } else {
+        previewUrl = URL.createObjectURL(file);
+        base64 = await fileToBase64(file);
+        mimeType = file.type || "image/jpeg";
+      }
+
+      setSelectedImage(previewUrl);
+      mutate({ data: { imageBase64: base64, mimeType } });
+    } catch (err) {
       toast({
         title: "Faylda xatolik",
-        description: "Iltimos, toʻgʻri rasm fayli tanlanganligiga ishonch hosil qiling.",
+        description:
+          (err as Error)?.message ||
+          "Iltimos, toʻgʻri rasm yoki video tanlanganligiga ishonch hosil qiling.",
         variant: "destructive",
       });
       setSelectedImage(null);
+    } finally {
+      setIsPreparing(false);
     }
   };
 
   const handleReset = () => {
     reset();
-    if (selectedImage) URL.revokeObjectURL(selectedImage);
+    if (selectedImage && selectedImage.startsWith("blob:")) {
+      URL.revokeObjectURL(selectedImage);
+    }
     setSelectedImage(null);
   };
+
+  const isBusy = isPending || isPreparing;
 
   return (
     <div className="min-h-screen w-full flex flex-col text-foreground selection:bg-primary/30">
@@ -77,7 +106,7 @@ export default function Home() {
                 exit={{ opacity: 0, scale: 0.96, filter: "blur(4px)" }}
                 transition={{ duration: 0.5 }}
               >
-                <DropzoneArea onFileSelect={handleFileSelect} isProcessing={isPending} />
+                <DropzoneArea onFileSelect={handleFileSelect} isProcessing={isBusy} />
               </motion.div>
             ) : (
               <motion.div
@@ -101,6 +130,9 @@ export default function Home() {
 
         {/* Popular films */}
         <PopularFilms />
+
+        {/* Recommended films */}
+        <RecommendedFilms />
 
         {/* Genres */}
         <Genres />

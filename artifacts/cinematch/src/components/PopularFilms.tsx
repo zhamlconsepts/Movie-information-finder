@@ -77,6 +77,14 @@ const FILMS = [
     rating: "8.8",
     poster: `${BASE}posters/forrest-gump.jpg`,
   },
+  {
+    title: "The Shawshank Redemption",
+    year: 1994,
+    director: "Frank Darabont",
+    genre: "Drama",
+    rating: "9.3",
+    poster: `${BASE}posters/shawshank.jpg`,
+  },
 ];
 
 export function PopularFilms() {
@@ -84,7 +92,7 @@ export function PopularFilms() {
     <section id="popular" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
       <SectionTitle title="Mashhur Kinolar" subtitle="Eng koʻp tanib olinadigan kinolar va seriallar" />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-10">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-10">
         {FILMS.map((film, i) => (
           <motion.div
             key={film.title}

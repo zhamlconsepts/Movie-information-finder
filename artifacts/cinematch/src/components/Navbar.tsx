@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: "Bosh sahifa", href: "#home" },
   { label: "Qanday ishlaydi", href: "#how" },
   { label: "Mashhur kinolar", href: "#popular" },
+  { label: "Tavsiyalar", href: "#recommended" },
   { label: "Janrlar", href: "#genres" },
 ];
 
