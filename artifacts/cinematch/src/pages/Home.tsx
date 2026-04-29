@@ -27,11 +27,9 @@ export default function Home() {
 
   const handleFileSelect = async (file: File) => {
     try {
-      // Create local preview URL
       const objectUrl = URL.createObjectURL(file);
       setSelectedImage(objectUrl);
 
-      // Convert to base64 for API
       const base64 = await fileToBase64(file);
       
       mutate({
@@ -59,32 +57,35 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col text-foreground selection:bg-primary/30">
+    <div className="min-h-screen w-full relative flex flex-col text-foreground selection:bg-primary/30 font-sans">
       <BackgroundSlider />
       
-      <main className="relative z-10 flex-1 flex flex-col items-center pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <main className="relative z-10 flex-1 flex flex-col items-center pt-32 pb-12 px-4 sm:px-6 lg:px-8">
         
-        {/* Header Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center max-w-3xl mx-auto space-y-4 mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium uppercase tracking-widest text-primary mb-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            AI Scene Recognition
-          </div>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold tracking-tighter text-white text-glow">
-            CineMatch
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Upload any movie frame, and our cinematic engine will instantly identify the film, director, and context.
-          </p>
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {!filmData && (
+            <motion.div 
+              key="header"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20, filter: "blur(4px)" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-center max-w-4xl mx-auto space-y-6 mb-16"
+            >
+              <h1 className="text-6xl sm:text-7xl md:text-8xl font-display italic font-medium tracking-tight text-foreground text-glow drop-shadow-2xl">
+                CineMatch
+              </h1>
+              <div className="space-y-2">
+                <p className="text-xl sm:text-2xl text-primary font-display tracking-wide uppercase">
+                  Discover the film behind every frame
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground/80 tracking-widest uppercase">
+                  Filmlarni rasm orqali toping
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Content Area */}
         <div className="w-full flex-1 flex flex-col">
@@ -94,8 +95,8 @@ export default function Home() {
                 key="uploader"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                transition={{ duration: 0.6 }}
                 className="w-full"
               >
                 <DropzoneArea 
@@ -106,10 +107,10 @@ export default function Home() {
             ) : (
               <motion.div
                 key="results"
-                initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
+                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
                 className="w-full"
               >
                 <FilmResults 
@@ -124,8 +125,8 @@ export default function Home() {
 
       </main>
 
-      <footer className="relative z-10 py-6 text-center text-sm text-muted-foreground/60">
-        <p>Powered by Advanced Vision AI &bull; Cinematic dark theme</p>
+      <footer className="relative z-10 py-8 text-center text-xs tracking-widest uppercase text-muted-foreground/40 font-medium">
+        <p>A Premium Cinematic Database Tool</p>
       </footer>
     </div>
   );

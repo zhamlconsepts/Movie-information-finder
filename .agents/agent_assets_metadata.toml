@@ -1,0 +1,38 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "1yeR_UrUxepB8SJlk3Waz"
+uri = "file://artifacts/cinematch/public/images/scene-1.png"
+type = "image"
+title = "Inception folding city"
+
+[[generated]]
+id = "rnOu8lrlOBMswFvODPIZn"
+uri = "file://artifacts/cinematch/public/images/scene-2.png"
+type = "image"
+title = "Blade Runner neon noir"
+
+[[generated]]
+id = "7wyaQ96kggWWKhZZITYLS"
+uri = "file://artifacts/cinematch/public/images/scene-3.png"
+type = "image"
+title = "Interstellar space scene"
+
+[[generated]]
+id = "sxxuSeorIB3QK3SFg_Bty"
+uri = "file://artifacts/cinematch/public/images/scene-4.png"
+type = "image"
+title = "Matrix digital corridor"
+
+[[generated]]
+id = "rLJ7TwDu1f12dPk3ER0Ck"
+uri = "file://artifacts/cinematch/public/images/scene-5.png"
+type = "image"
+title = "Film noir dramatic lighting"
+
+[[generated]]
+id = "yI0UV6jNgOI7OFepQKtBr"
+uri = "file://artifacts/cinematch/public/images/scene-6.png"
+type = "image"
+title = "Classic cinema theater"
