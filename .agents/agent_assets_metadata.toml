@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "gmy8OzhmomCNmmxaIrPYc"
+uri = "file://cinematch-project.tar.gz"
+type = "unspecified"
+title = "CineMatch - Loyiha fayllari (tar.gz)"
