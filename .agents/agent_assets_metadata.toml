@@ -6,3 +6,9 @@ id = "gmy8OzhmomCNmmxaIrPYc"
 uri = "file://cinematch-project.tar.gz"
 type = "unspecified"
 title = "CineMatch - Loyiha fayllari (tar.gz)"
+
+[[outputs]]
+id = "4HUcW58TTw74afL1pE77_"
+uri = "file://cinematch-final.tar.gz"
+type = "unspecified"
+title = "CineMatch — Kod fayllari (165 KB)"
